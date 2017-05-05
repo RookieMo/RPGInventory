@@ -5,8 +5,9 @@ using UnityEngine.UI;
 
 public class GameController : MonoBehaviour {
 	public Text displayText;
+	public InputAction[] inputActions;
 	[HideInInspector] public RoomNavigation roomNavigation;
-	[HideInInspector] public List<string> interationDescriptionsInRoom = new List<string>();
+	[HideInInspector] public List<string> interactionDescriptionsInRoom = new List<string>();
 	List<string> actionLog = new List<string>();
 	// Use this for initialization
 	void Awake () {
@@ -24,8 +25,9 @@ public class GameController : MonoBehaviour {
 	}
 
 	public void DisplayRoomText(){
+		ClearCollectionsForNewRooms();
 		UnpackRoom();
-		string joinedInteractionDescriptions = string.Join("\n", interationDescriptionsInRoom.ToArray());
+		string joinedInteractionDescriptions = string.Join("\n", interactionDescriptionsInRoom.ToArray());
 		string combinedText = roomNavigation.currentRoom.description + "\n" + joinedInteractionDescriptions;
 
 		LogStringWithReturn(combinedText);
@@ -33,6 +35,11 @@ public class GameController : MonoBehaviour {
 	
 	void UnpackRoom(){
 		roomNavigation.UnpackExitsInRoom();
+	}
+
+	void ClearCollectionsForNewRooms(){
+		interactionDescriptionsInRoom.Clear();
+		roomNavigation.ClearExits();
 	}
 	public void LogStringWithReturn(string stringToAdd){
 		actionLog.Add(stringToAdd + "\n");
