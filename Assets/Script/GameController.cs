@@ -43,7 +43,7 @@ public class GameController : MonoBehaviour {
 	}
 
 	void PrepareObjectsToTakeOrExamine(Room currentRoom){
-		for(int i = 0; i < currentRoom.interactableObjectsInRoom.Length; i++){
+		for(int i = 0; i < currentRoom.interactableObjectsInRoom.Count; i++){
 			 string descriptionNotInInventory = interactableItems.GetObjectsNotInInventory(currentRoom, i);
 			 if(descriptionNotInInventory != null){
 				 interactionDescriptionsInRoom.Add(descriptionNotInInventory);
@@ -60,6 +60,20 @@ public class GameController : MonoBehaviour {
 					 interactableItems.takeDictionary.Add(interactableInRoom.noun, interaction.textResponse);
 				 }
 			 }
+		}
+		interactableItems.AddActionResponsesToOpenDictionary();
+	}
+
+	public void PrepareNewObjectsToTakeOrExamine(InteractableObject newInteractObject){
+		for(int j = 0; j < newInteractObject.interactions.Length; j++){
+			Interaction interaction = newInteractObject.interactions[j];
+			if(interaction.inputAction.keyword == "examine"){
+				interactableItems.examineDictionary.Add(newInteractObject.noun, interaction.textResponse);
+			}
+
+			if(interaction.inputAction.keyword == "take"){
+				interactableItems.takeDictionary.Add(newInteractObject.noun, interaction.textResponse);
+			}
 		}
 	}
 

@@ -7,9 +7,9 @@ public class InteractableItems : MonoBehaviour {
 	public List<InteractableObject> usableItemList;
 	public Dictionary<string, string> examineDictionary = new Dictionary<string, string>();
 	public Dictionary<string, string> takeDictionary = new Dictionary<string, string>();
-	public Dictionary<string, string> openDictionary = new Dictionary<string, string>();
+	
 	[HideInInspector] public List<string> nounsInRoom = new List<string>();
-
+	public Dictionary<string, ActionResponse> openDictionary = new Dictionary<string, ActionResponse>();
 	Dictionary<string, ActionResponse> useDictionary = new Dictionary<string, ActionResponse>();
 	List<string> nounsInInventory = new List<string>();
 	GameController controller;
@@ -42,6 +42,27 @@ public class InteractableItems : MonoBehaviour {
 
 				if(!useDictionary.ContainsKey(noun)){
 					useDictionary.Add(noun, interaction.actionResponse);
+				}
+			}
+		}
+	}
+
+	public void AddActionResponsesToOpenDictionary(){
+		for(int i = 0; i < nounsInRoom.Count; i++){
+			string noun = nounsInRoom[i];
+
+			InteractableObject interactableObjectInRoom = GetInteractbleObjectFromUsableList(noun);
+			if(interactableObjectInRoom == null)
+				continue;
+
+			for(int j = 0; j < interactableObjectInRoom.interactions.Length; j++){
+				Interaction interaction = interactableObjectInRoom.interactions[j];
+				if(interaction.actionResponse == null)
+					continue;
+
+				if(!openDictionary.ContainsKey(noun)){
+					Debug.Log(noun);
+					openDictionary.Add(noun, interaction.actionResponse);
 				}
 			}
 		}
@@ -96,6 +117,22 @@ public class InteractableItems : MonoBehaviour {
 			}
 		} else {
 			controller.LogStringWithReturn("There is no " + nounToUse + " in your inventory to use");
+		}
+	}
+
+	public void OpenItem(string[] separatedInputWords){
+		string nounToOpen = separatedInputWords[1];
+		if(nounsInRoom.Contains(nounToOpen)){
+			if(openDictionary.ContainsKey(nounToOpen)){
+				bool actionResult = openDictionary[nounToOpen].DoActionResponse(controller);
+				if(!actionResult){
+					controller.LogStringWithReturn("Hmm. Nothing happens.");
+				}
+			} else {
+				controller.LogStringWithReturn("You can't open the " + nounToOpen);
+			}
+		} else {
+			controller.LogStringWithReturn("There is no " + nounToOpen + " in room to open");
 		}
 	}
 }
