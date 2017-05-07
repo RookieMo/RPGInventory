@@ -9,11 +9,13 @@ public class GameController : MonoBehaviour {
 	[HideInInspector] public RoomNavigation roomNavigation;
 	[HideInInspector] public List<string> interactionDescriptionsInRoom = new List<string>();
 	[HideInInspector] public InteractableItems interactableItems;
+	[HideInInspector] public Player player;
 	List<string> actionLog = new List<string>();
 	// Use this for initialization
 	void Awake () {
 		interactableItems = GetComponent<InteractableItems>();
 		roomNavigation = GetComponent<RoomNavigation>();
+		player = GetComponent<Player>();
 	}
 
 	void Start(){

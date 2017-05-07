@@ -57,7 +57,7 @@ public class InteractableItems : MonoBehaviour {
 	}
 
 	public void DisplayInventory(){
-		controller.LogStringWithReturn("You look in your backpack, inside you have: ");
+		controller.LogStringWithReturn("Inventory: ");
 		for(int i = 0; i < nounsInInventory.Count; i++){
 			controller.LogStringWithReturn(nounsInInventory[i]);
 		}
