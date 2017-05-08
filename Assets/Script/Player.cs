@@ -7,6 +7,9 @@ public class Player : MonoBehaviour {
 	string race;
 	string gender;
 
+	int carryWeight;
+	int equipWeight;
+
 	//Main Attributes
 	int strength = 10;
 	int perception = 10;
@@ -23,6 +26,7 @@ public class Player : MonoBehaviour {
 	int mana = 50;
 
 	List<string> perks = new List<string>();
+	//public List<InteractableObject> playerInventory = new List<InteractableObject>();
 
 	//[HideInInspector] public InteractableItems interactableItems;
 	GameController controller;

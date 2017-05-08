@@ -7,6 +7,7 @@ public class InteractableItems : MonoBehaviour {
 	public List<InteractableObject> usableItemList;
 	public Dictionary<string, string> examineDictionary = new Dictionary<string, string>();
 	public Dictionary<string, string> takeDictionary = new Dictionary<string, string>();
+	public Dictionary<string, string> dropDictionary = new Dictionary<string, string>();
 	
 	[HideInInspector] public List<string> nounsInRoom = new List<string>();
 	public Dictionary<string, ActionResponse> openDictionary = new Dictionary<string, ActionResponse>();
@@ -61,7 +62,6 @@ public class InteractableItems : MonoBehaviour {
 					continue;
 
 				if(!openDictionary.ContainsKey(noun)){
-					Debug.Log(noun);
 					openDictionary.Add(noun, interaction.actionResponse);
 				}
 			}
@@ -75,6 +75,23 @@ public class InteractableItems : MonoBehaviour {
 			}
 		}
 		return null;
+	}
+
+	void PrepareObjectsToDrop(){
+		for(int i = 0; i < nounsInInventory.Count; i++){
+			string noun = nounsInInventory[i];
+
+			InteractableObject interactableObjectInInventory = GetInteractbleObjectFromUsableList(noun);
+			if(interactableObjectInInventory == null)
+				continue;
+
+			for(int j = 0; j < interactableObjectInInventory.interactions.Length; j++){
+				Interaction interaction = interactableObjectInInventory.interactions[j];
+				if(interaction.inputAction.keyword == "drop"){
+					 dropDictionary.Add(noun, interaction.textResponse);
+				 }
+			}
+		}
 	}
 
 	public void DisplayInventory(){
@@ -100,6 +117,20 @@ public class InteractableItems : MonoBehaviour {
 		}
 		else {
 			controller.LogStringWithReturn("Ther is no " + noun + " here to take.");
+			return null;
+		}
+	}
+
+	public Dictionary<string, string> Drop(string[] separatedInputWords){
+		string noun = separatedInputWords [1];
+		if(nounsInInventory.Contains(noun)){
+			nounsInRoom.Add(noun);
+			PrepareObjectsToDrop();
+			nounsInInventory.Remove(noun);
+			return dropDictionary;
+		}
+		else {
+			controller.LogStringWithReturn("Ther is no " + noun + " here to drop.");
 			return null;
 		}
 	}

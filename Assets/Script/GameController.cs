@@ -64,7 +64,7 @@ public class GameController : MonoBehaviour {
 		interactableItems.AddActionResponsesToOpenDictionary();
 	}
 
-	public void PrepareNewObjectsToTakeOrExamine(InteractableObject newInteractObject){
+	public void PrepareNewObjectToTakeOrExamine(InteractableObject newInteractObject){
 		for(int j = 0; j < newInteractObject.interactions.Length; j++){
 			Interaction interaction = newInteractObject.interactions[j];
 			if(interaction.inputAction.keyword == "examine"){
