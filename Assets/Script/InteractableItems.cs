@@ -111,6 +111,7 @@ public class InteractableItems : MonoBehaviour {
 		string noun = separatedInputWords [1];
 		if(nounsInRoom.Contains(noun)){
 			nounsInInventory.Add(noun);
+			controller.player.playerTakeItem(GetInteractbleObjectFromUsableList(noun));
 			AddActionResponsesToUseDictionary();
 			nounsInRoom.Remove(noun);
 			return takeDictionary;

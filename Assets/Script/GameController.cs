@@ -4,21 +4,23 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class GameController : MonoBehaviour {
+	public Player player;
 	public Text displayText;
 	public InputAction[] inputActions;
 	[HideInInspector] public RoomNavigation roomNavigation;
 	[HideInInspector] public List<string> interactionDescriptionsInRoom = new List<string>();
 	[HideInInspector] public InteractableItems interactableItems;
-	[HideInInspector] public Player player;
+	//[HideInInspector] public Player player;
 	List<string> actionLog = new List<string>();
 	// Use this for initialization
 	void Awake () {
 		interactableItems = GetComponent<InteractableItems>();
 		roomNavigation = GetComponent<RoomNavigation>();
-		player = GetComponent<Player>();
+		player.GetComponent<Player>();
 	}
 
 	void Start(){
+		LogStringWithReturn("You suddenly woke up in a mysterious place.\nLook like you have to find the way out");
 		DisplayRoomText();
 		DisplayLoggedText();
 	}
@@ -91,6 +93,12 @@ public class GameController : MonoBehaviour {
 	}
 	public void LogStringWithReturn(string stringToAdd){
 		actionLog.Add(stringToAdd + "\n");
+	}
+	public void LogStringWithTab(string stringToAdd){
+		actionLog.Add(stringToAdd + "\t");
+	}
+	public void LogString(string stringToAdd){
+		actionLog.Add(stringToAdd);
 	}
 	// Update is called once per frame
 	void Update () {
