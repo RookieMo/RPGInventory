@@ -9,14 +9,12 @@ public class BaseStat {
 
 	public float BaseValue;
 	public string StatName;
-	public string StatDescription;
 	float FinalValue;
 
-	public BaseStat(float baseValue, string statName, string statDescription){
+	public BaseStat(float baseValue, string statName){
 		this.BaseAdditives = new List<StatBonus>();
 		this.BaseValue = baseValue;
 		this.StatName = statName;
-		this.StatDescription = statDescription;
 	}
 
 	public void AddStatBonus(StatBonus statBonus){

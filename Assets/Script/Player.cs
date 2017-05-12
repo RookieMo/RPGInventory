@@ -13,11 +13,11 @@ public class Player : MonoBehaviour {
 	//[HideInInspector] public InteractableItems interactableItems;
 	public GameController controller;
 	PlayerStat playerStats;
-	PlayerEquipment equipment;
+	PlayerEquipment playerEquipment;
 	void Awake(){
 		controller.GetComponent<GameController>();
 		playerStats = GetComponent<PlayerStat>();
-		equipment = GetComponent<PlayerEquipment>();
+		playerEquipment = GetComponent<PlayerEquipment>();
 		//interactableItems = GetComponent<InteractableItems>();
 	}
 
@@ -32,20 +32,55 @@ public class Player : MonoBehaviour {
 	}
 
 	public void DisplayEquipment(){
-		for(int i = 0; i < equipment.equipSlot.Count; i++){
-			controller.LogString(equipment.equipSlot[i].EquipSlotName + ": " + equipment.equipSlot[i].EquipObject.noun);
+		for(int i = 0; i < playerEquipment.equipSlot.Count; i++){
+			controller.LogString(playerEquipment.equipSlot[i].EquipSlotName + ": " + playerEquipment.equipSlot[i].EquipObject.noun);
 		}
 	}
 
 	public void DisplayPerk(){
-
+		controller.LogStringWithReturn("List of player perks: ");
+		for(int i = 0; i < perks.Count; i++){
+			controller.LogString(perks[i]);
+		}
 	}
 
 	public void playerEquipItem(InteractableObject item){
-		playerStats.AddStatBonus(item.stats);
+		playerStats.AddStatBonusWhenEquip(item.stats);
+		playerEquipment.EquipItem(item);
+		playerStats.RemoveStatBonus(playerEquipment.currentItemToUnEquip.stats);
+		addPerk(item);
+		removePerk(playerEquipment.currentItemToUnEquip);
 	}
 
 	public void playerTakeItem(InteractableObject item){
-		playerStats.AddStatBonus(item.stats);
+		playerStats.AddStatBonusWhenTake(item.stats);
+	}
+
+	public InteractableObject getCurrentUnEquipItem(){
+		return playerEquipment.currentItemToUnEquip;
+	}
+
+	void addPerk(InteractableObject item){
+		for(int i = 0; i < item.perks.Count; i++){
+			if(item.perks[i] == "Absorb Fire"){
+				int index = perks.FindIndex(x=> x.Equals("Resist Fire"));
+				if(index != -1){
+					perks[index] = "Absorb Fire";
+				}
+			} else if(item.perks[i] == "Absorb Cold"){
+				int index = perks.FindIndex(x=> x.Equals("Resist Cold"));
+				if(index != -1){
+					perks[index] = "Absorb Cold";
+				}
+			} else{
+				perks.Add(item.perks[i]);
+			}
+		}
+	}
+
+	void removePerk(InteractableObject item){
+		for(int i = 0; i < item.perks.Count; i++){
+			perks.Remove(item.perks[i]);
+		}
 	}
 }

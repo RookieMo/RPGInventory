@@ -9,6 +9,7 @@ public class TextInput : MonoBehaviour {
 	GameController controller;
 
 	void Awake(){
+		inputField.ActivateInputField();
 		controller = GetComponent<GameController>();
 		inputField.onEndEdit.AddListener(AcceptStringInput);
 	}

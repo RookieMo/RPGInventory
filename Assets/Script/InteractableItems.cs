@@ -8,6 +8,7 @@ public class InteractableItems : MonoBehaviour {
 	public Dictionary<string, string> examineDictionary = new Dictionary<string, string>();
 	public Dictionary<string, string> takeDictionary = new Dictionary<string, string>();
 	public Dictionary<string, string> dropDictionary = new Dictionary<string, string>();
+	public Dictionary<string, string> equipDictionary = new Dictionary<string, string>();
 	
 	[HideInInspector] public List<string> nounsInRoom = new List<string>();
 	public Dictionary<string, ActionResponse> openDictionary = new Dictionary<string, ActionResponse>();
@@ -68,28 +69,28 @@ public class InteractableItems : MonoBehaviour {
 		}
 	}
 
-	InteractableObject GetInteractbleObjectFromUsableList(string noun){
-		for(int i = 0; i < usableItemList.Count; i++){
-			if(usableItemList[i].noun == noun){
-				return usableItemList[i];
-			}
+	public InteractableObject GetInteractbleObjectFromUsableList(string noun){
+		// for(int i = 0; i < usableItemList.Count; i++){
+		// 	if(usableItemList[i].noun == noun){
+		// 		return usableItemList[i];
+		// 	}
+		// }
+		// return null;
+		foreach(InteractableObject item in usableItemList){
+			return usableItemList.Find(x=> x.noun == noun);
 		}
 		return null;
 	}
 
-	void PrepareObjectsToDrop(){
-		for(int i = 0; i < nounsInInventory.Count; i++){
-			string noun = nounsInInventory[i];
+	void PrepareObjectToDropOrEquip(InteractableObject item){
+		for(int j = 0; j < item.interactions.Length; j++){
+			Interaction interaction = item.interactions[j];
+			if(interaction.inputAction.keyword == "drop"){
+				dropDictionary.Add(item.noun, interaction.textResponse);
+			}
 
-			InteractableObject interactableObjectInInventory = GetInteractbleObjectFromUsableList(noun);
-			if(interactableObjectInInventory == null)
-				continue;
-
-			for(int j = 0; j < interactableObjectInInventory.interactions.Length; j++){
-				Interaction interaction = interactableObjectInInventory.interactions[j];
-				if(interaction.inputAction.keyword == "drop"){
-					 dropDictionary.Add(noun, interaction.textResponse);
-				 }
+			if(interaction.inputAction.keyword == "equip"){
+				equipDictionary.Add(item.noun, interaction.textResponse);
 			}
 		}
 	}
@@ -109,11 +110,14 @@ public class InteractableItems : MonoBehaviour {
 
 	public Dictionary<string, string> Take(string[] separatedInputWords){
 		string noun = separatedInputWords [1];
+		InteractableObject item = GetInteractbleObjectFromUsableList(noun);
 		if(nounsInRoom.Contains(noun)){
 			nounsInInventory.Add(noun);
-			controller.player.playerTakeItem(GetInteractbleObjectFromUsableList(noun));
+			controller.player.playerTakeItem(item);
 			AddActionResponsesToUseDictionary();
+			PrepareObjectToDropOrEquip(item);
 			nounsInRoom.Remove(noun);
+			controller.roomNavigation.currentRoom.interactableObjectsInRoom.Remove(item);
 			return takeDictionary;
 		}
 		else {
@@ -124,9 +128,11 @@ public class InteractableItems : MonoBehaviour {
 
 	public Dictionary<string, string> Drop(string[] separatedInputWords){
 		string noun = separatedInputWords [1];
+		InteractableObject item = GetInteractbleObjectFromUsableList(noun);
 		if(nounsInInventory.Contains(noun)){
 			nounsInRoom.Add(noun);
-			PrepareObjectsToDrop();
+			controller.roomNavigation.currentRoom.interactableObjectsInRoom.Add(item);
+			//controller.PrepareNewObjectToTakeOrExamine(item);
 			nounsInInventory.Remove(noun);
 			return dropDictionary;
 		}
@@ -149,6 +155,23 @@ public class InteractableItems : MonoBehaviour {
 			}
 		} else {
 			controller.LogStringWithReturn("There is no " + nounToUse + " in your inventory to use");
+		}
+	}
+
+	public Dictionary<string, string> EquipItem(string[] separatedInputWords){
+		string noun = separatedInputWords [1];
+		if(nounsInInventory.Contains(noun)){
+			//PrepareObjectsToDrop();
+			nounsInInventory.Remove(noun);
+			controller.player.playerEquipItem(GetInteractbleObjectFromUsableList(noun));
+			if(controller.player.getCurrentUnEquipItem().noun != "Empty"){
+				nounsInInventory.Add(controller.player.getCurrentUnEquipItem().noun);
+			}
+			return equipDictionary;
+		}
+		else {
+			controller.LogStringWithReturn("Ther is no " + noun + " here to equip.");
+			return null;
 		}
 	}
 
