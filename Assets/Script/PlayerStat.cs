@@ -28,6 +28,7 @@ public class PlayerStat : MonoBehaviour {
 		stats.Add(new BaseStat(100, "Max Carry Weight"));
 		stats.Add(new BaseStat(0, "Current Equip Weight"));
 		stats.Add(new BaseStat(500, "Max Equip Weight"));
+		stats.Add(new BaseStat(0, "Gold"));
 	}
 
 	public void AddStatBonus(List<BaseStat> statBonuses){

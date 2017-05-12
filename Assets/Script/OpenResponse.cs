@@ -14,7 +14,7 @@ public class OpenResponse : ActionResponse {
 				controller.roomNavigation.currentRoom.interactableObjectsInRoom.Add(openObject.inventory[i]);
 				controller.PrepareNewObjectToTakeOrExamine(openObject.inventory[i]);
 				controller.interactableItems.nounsInRoom.Add(openObject.inventory[i].noun);
-				controller.LogStringWithReturn(openObject.inventory[i].description);
+				controller.LogString(openObject.inventory[i].description);
 			}
 			openObject.inventory.Clear();
 			controller.interactableItems.AddActionResponsesToOpenDictionary();

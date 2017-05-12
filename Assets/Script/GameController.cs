@@ -70,11 +70,15 @@ public class GameController : MonoBehaviour {
 		for(int j = 0; j < newInteractObject.interactions.Length; j++){
 			Interaction interaction = newInteractObject.interactions[j];
 			if(interaction.inputAction.keyword == "examine"){
-				interactableItems.examineDictionary.Add(newInteractObject.noun, interaction.textResponse);
+				if(!interactableItems.examineDictionary.ContainsKey(newInteractObject.noun)){
+					interactableItems.examineDictionary.Add(newInteractObject.noun, interaction.textResponse);
+				}
 			}
 
 			if(interaction.inputAction.keyword == "take"){
-				interactableItems.takeDictionary.Add(newInteractObject.noun, interaction.textResponse);
+				if(!interactableItems.takeDictionary.ContainsKey(newInteractObject.noun)){
+					interactableItems.takeDictionary.Add(newInteractObject.noun, interaction.textResponse);
+				}
 			}
 		}
 	}

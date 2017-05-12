@@ -11,6 +11,7 @@ public class InteractableObject : ScriptableObject {
     public Interaction[] interactions;
     public List<InteractableObject> inventory;
     public string ItemType = "Type of item";
+    public string size = "Size of item";
     public List<BaseStat> stats;
     public List<string> perks;
 }

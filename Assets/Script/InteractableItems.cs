@@ -86,11 +86,15 @@ public class InteractableItems : MonoBehaviour {
 		for(int j = 0; j < item.interactions.Length; j++){
 			Interaction interaction = item.interactions[j];
 			if(interaction.inputAction.keyword == "drop"){
-				dropDictionary.Add(item.noun, interaction.textResponse);
+				if(!dropDictionary.ContainsKey(item.noun)){
+					dropDictionary.Add(item.noun, interaction.textResponse);
+				}
 			}
 
 			if(interaction.inputAction.keyword == "equip"){
-				equipDictionary.Add(item.noun, interaction.textResponse);
+				if(!equipDictionary.ContainsKey(item.noun)){
+					equipDictionary.Add(item.noun, interaction.textResponse);
+				}
 			}
 		}
 	}
@@ -132,7 +136,7 @@ public class InteractableItems : MonoBehaviour {
 		if(nounsInInventory.Contains(noun)){
 			nounsInRoom.Add(noun);
 			controller.roomNavigation.currentRoom.interactableObjectsInRoom.Add(item);
-			//controller.PrepareNewObjectToTakeOrExamine(item);
+			controller.PrepareNewObjectToTakeOrExamine(item);
 			nounsInInventory.Remove(noun);
 			return dropDictionary;
 		}
